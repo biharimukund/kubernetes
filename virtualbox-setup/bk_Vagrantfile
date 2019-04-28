@@ -1,0 +1,55 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+require 'yaml'
+$configureMaster = <<-SCRIPT
+    echo "This is master"
+    IP_ADDR=$(ifconfig | grep -A1 eth1 | awk 'NR>1{print $2}')
+    HOST_NAME=$(hostname -s)
+    sudo swapoff -a
+    kubeadm init --apiserver-advertise-address=$IP_ADDR --apiserver-cert-extra-sans=$IP_ADDR  --node-name $HOST_NAME --pod-network-cidr=10.244.0.0/16
+    sudo --user=vagrant mkdir -p /home/vagrant/.kube
+    sudo cp -i /etc/kubernetes/admin.conf /home/vagrant/.kube/config
+    sudo chown $(id -u vagrant):$(id -g vagrant) /home/vagrant/.kube/config
+    export KUBECONFIG=/etc/kubernetes/admin.conf
+    kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/a70459be0084506e4ec919aa1c114638878db11b/Documentation/kube-flannel.yml
+    sudo kubeadm token create --print-join-command > /tmp/kubeadm_join_cmd.sh
+    sudo chmod 755 /tmp/kubeadm_join_cmd.sh
+SCRIPT  
+
+$configureNode = <<-SCRIPT
+    echo "This is worker"
+    yum install -y sshpass
+    sshpass -p "vagrant" scp -o StrictHostKeyChecking=no vagrant@192.168.56.105:/tmp/kubeadm_join_cmd.sh .
+    sh ./kubeadm_join_cmd.sh
+SCRIPT
+
+Vagrant.configure("2") do |config|
+  
+  servers = YAML.load_file('servers.yaml')
+  servers.each do |servers| 
+
+    config.vm.define servers["name"] do |srv|
+      srv.vm.box = servers["box"] 
+      srv.vm.hostname = servers["name"] 
+      srv.vm.network "private_network", ip: servers["ip"], :adapater=>2 
+      srv.vm.network :forwarded_port, guest: 22, host: servers["port"] 
+    
+      srv.vm.provider :virtualbox do |vb|
+        vb.name = servers["name"] 
+        vb.cpus = servers["cpus"] 
+        vb.memory = servers["ram"] 
+        vb.customize ["modifyvm", :id, "--cpuexecutioncap", "33"]  
+      end
+
+      if servers["type"] == "master"
+          srv.vm.provision "shell", inline: $configureMaster
+      else
+          srv.vm.provision "shell", inline: "$configureNode"
+      end  
+
+    end
+
+  end
+  
+end

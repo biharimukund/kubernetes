@@ -1,0 +1,22 @@
+---
+- name: k8s-master-lx01
+  type: master
+  box: centos/7
+  cpus: 2
+  ram: 2048
+  ip: 192.168.56.105
+  port: 10522
+- name: k8s-worker-lx01
+  type: worker
+  box: centos/7
+  cpus: 2
+  ram: 2048
+  ip: 192.168.56.106
+  port: 10622
+- name: k8s-worker-lx02
+  type: worker
+  box: centos/7
+  cpus: 2
+  ram: 2048
+  ip: 192.168.56.107
+  port: 10722

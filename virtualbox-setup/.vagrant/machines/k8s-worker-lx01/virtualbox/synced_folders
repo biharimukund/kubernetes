@@ -1,0 +1,1 @@
+{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"/Users/mukund_bihari/k8s_virtualbox/virtualbox-setup","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}
