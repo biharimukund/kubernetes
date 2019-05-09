@@ -2,8 +2,14 @@
 # vi: set ft=ruby :
 
 require 'yaml'
+
 Vagrant.configure("2") do |config|
-  
+
+  commands = YAML.load_file('commands.yaml')
+  commands.each do |command|
+    config.vm.provision :shell, inline: command
+  end
+
   servers = YAML.load_file('servers.yaml')
   servers.each do |servers| 
 
