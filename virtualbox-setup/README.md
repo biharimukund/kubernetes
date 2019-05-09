@@ -3,8 +3,8 @@
 This repo can be used to setup k8s cluster with internal etcd on virtual box with 1 master and 2 worker nodes.
 
 ## Prequsities:
-* Virtual box should be installed on system. Click here(https://www.virtualbox.org/wiki/Downloads) to see innstallation steps if not installed.
-* Vagrant should be present on your local machine. Installation steps(https://www.vagrantup.com/docs/installation/)
+* Virtual box should be installed on system. Click [here](https://www.virtualbox.org/wiki/Downloads) to see innstallation steps if not installed.
+* Vagrant should be present on your local machine. Installation [steps](https://www.vagrantup.com/docs/installation/)
 
 ## Steps to create k8s cluster:
 1. git clone https://github.com/biharimukund/kubernetes.git
