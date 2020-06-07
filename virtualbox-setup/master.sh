@@ -9,7 +9,7 @@ sudo --user=vagrant mkdir -p /home/vagrant/.kube
 sudo cp -i /etc/kubernetes/admin.conf /home/vagrant/.kube/config
 sudo chown $(id -u vagrant):$(id -g vagrant) /home/vagrant/.kube/config
 export KUBECONFIG=/etc/kubernetes/admin.conf
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/a70459be0084506e4ec919aa1c114638878db11b/Documentation/kube-flannel.yml
+kubectl apply -f https://docs.projectcalico.org/v3.14/manifests/calico.yaml
 sudo kubeadm token create --print-join-command > /tmp/kubeadm_join_cmd.sh
 sudo chmod 755 /tmp/kubeadm_join_cmd.sh
 sudo sed -i '/^[^#]*PasswordAuthentication[[:space:]]no/c\PasswordAuthentication yes' /etc/ssh/sshd_config
